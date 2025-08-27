@@ -26,7 +26,8 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					foreground: 'hsl(var(--primary-foreground))',
+					glow: 'hsl(var(--primary-glow))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -52,6 +53,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				pet: {
+					happy: 'hsl(var(--pet-happy))',
+					hungry: 'hsl(var(--pet-hungry))',
+					sleepy: 'hsl(var(--pet-sleepy))',
+					playful: 'hsl(var(--pet-playful))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +69,21 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			backgroundImage: {
+				'gradient-pet': 'var(--gradient-pet-bg)',
+				'gradient-bar': 'var(--gradient-bar)',
+				'gradient-happy': 'var(--gradient-happy)',
+				'gradient-energy': 'var(--gradient-energy)'
+			},
+			boxShadow: {
+				'pet': 'var(--shadow-pet)',
+				'bar': 'var(--shadow-bar)',
+				'button': 'var(--shadow-button)'
+			},
+			transitionTimingFunction: {
+				'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+				'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
