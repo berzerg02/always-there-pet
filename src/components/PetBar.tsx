@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, Minimize2, Settings, Heart, Utensils, Gamepad2 
 import { Pet, PetAction } from '@/types/pet';
 import { PetStatusBar } from './PetStatusBar';
 import { PetSelector } from './PetSelector';
+import { AnimatedPet, FloatingActionText } from './AnimatedPet';
 import { cn } from '@/lib/utils';
 
 interface PetBarProps {
@@ -16,6 +17,7 @@ interface PetBarProps {
   onToggleMenu: () => void;
   onSelectPet: (petId: string) => void;
   onPetAction: (action: PetAction) => void;
+  lastAction?: { action: PetAction; timestamp: number } | null;
 }
 
 export const PetBar = ({
@@ -26,17 +28,43 @@ export const PetBar = ({
   onToggleMinimize,
   onToggleMenu,
   onSelectPet,
-  onPetAction
+  onPetAction,
+  lastAction
 }: PetBarProps) => {
-  const [petImage, setPetImage] = useState<string>('');
+  const [petAnimation, setPetAnimation] = useState<'idle' | 'happy' | 'eating' | 'playing' | 'sleepy'>('idle');
+  const [showFloatingText, setShowFloatingText] = useState(false);
+  const [floatingText, setFloatingText] = useState({ text: '', emoji: '' });
 
+  // Handle pet animations based on actions
   useEffect(() => {
-    if (selectedPet) {
-      import(`@/assets/pet-${selectedPet.type}.png`).then((module) => {
-        setPetImage(module.default);
-      });
+    if (lastAction && selectedPet) {
+      const { action } = lastAction;
+      
+      switch (action) {
+        case 'feed':
+          setPetAnimation('eating');
+          setFloatingText({ text: 'Yummy!', emoji: '🍽️' });
+          break;
+        case 'play':
+          setPetAnimation('playing');
+          setFloatingText({ text: 'So fun!', emoji: '🎮' });
+          break;
+        case 'pet':
+          setPetAnimation('happy');
+          setFloatingText({ text: 'Love you!', emoji: '❤️' });
+          break;
+      }
+      
+      setShowFloatingText(true);
+      
+      // Reset animation after delay
+      const timeout = setTimeout(() => {
+        setPetAnimation('idle');
+      }, 1200);
+      
+      return () => clearTimeout(timeout);
     }
-  }, [selectedPet]);
+  }, [lastAction, selectedPet]);
 
   if (isMinimized) {
     return (
@@ -58,16 +86,18 @@ export const PetBar = ({
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-4">
             {selectedPet && (
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-card p-1 shadow-pet">
-                  {petImage && (
-                    <img 
-                      src={petImage} 
-                      alt={selectedPet.name}
-                      className="w-full h-full object-contain rounded-full"
-                    />
-                  )}
-                </div>
+              <div className="flex items-center gap-3 relative">
+                <AnimatedPet 
+                  pet={selectedPet}
+                  animation={petAnimation}
+                  size="md"
+                />
+                <FloatingActionText
+                  text={floatingText.text}
+                  emoji={floatingText.emoji}
+                  show={showFloatingText}
+                  onComplete={() => setShowFloatingText(false)}
+                />
                 <div>
                   <h3 className="font-semibold text-foreground">{selectedPet.name}</h3>
                   <div className="flex gap-2">

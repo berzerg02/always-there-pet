@@ -49,6 +49,8 @@ export const usePetGame = () => {
     showMenu: false
   });
 
+  const [lastAction, setLastAction] = useState<{ action: PetAction; timestamp: number } | null>(null);
+
   const { toast } = useToast();
 
   const selectedPet = gameState.pets.find(pet => pet.id === gameState.selectedPetId) || null;
@@ -90,6 +92,9 @@ export const usePetGame = () => {
       return;
     }
 
+    // Set the last action for animations
+    setLastAction({ action, timestamp: now });
+
     setGameState(prev => ({
       ...prev,
       pets: prev.pets.map(pet => {
@@ -105,7 +110,7 @@ export const usePetGame = () => {
               happiness: Math.min(100, pet.happiness + 5),
               lastFed: now
             };
-            message = `${pet.name} enjoyed the meal! 🍽️`;
+            message = `${pet.name} loved that delicious meal! Their belly is so happy! 🍽️`;
             break;
           case 'play':
             updates = {
@@ -113,19 +118,19 @@ export const usePetGame = () => {
               energy: Math.max(0, pet.energy - 10),
               lastPlayed: now
             };
-            message = `${pet.name} had fun playing! 🎮`;
+            message = `${pet.name} had an amazing time playing! They're wiggling with joy! 🎮`;
             break;
           case 'pet':
             updates = {
               happiness: Math.min(100, pet.happiness + 15),
               lastPetted: now
             };
-            message = `${pet.name} loves the attention! ❤️`;
+            message = `${pet.name} is purring with happiness from your gentle pets! ❤️`;
             break;
         }
 
         toast({
-          title: "Action completed!",
+          title: "Aww, so cute!",
           description: message,
         });
 
@@ -159,6 +164,7 @@ export const usePetGame = () => {
   return {
     gameState,
     selectedPet,
+    lastAction,
     performPetAction,
     selectPet,
     toggleMinimize,
